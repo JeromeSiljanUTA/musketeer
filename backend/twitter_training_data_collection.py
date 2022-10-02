@@ -90,10 +90,12 @@ for x in range(len(companies)):
         print("Error: Waiting 2 minutes for cooldown")
         time.sleep(120)
 
+print('\n\n\n DONE \n\n\n')
+
 # Push to db
 conn = psycopg2.connect(db_url)
 
-regex = re.compile('[^a-zA-Z]')
+regex = re.compile('[^a-zA-Z ]')
 
 with conn.cursor() as cur:
     cur.execute('SET DATABASE = defaultdb')
@@ -102,7 +104,7 @@ with conn.cursor() as cur:
         ticker = message['company']
         datetime = message['time']
         text = ''
-        regex.sub(text, message['text'].strip())
+        text = regex.sub(text, message['text'].strip())
         print(text)
         inc_val = did_inc(datetime)
         cur.execute(f"INSERT INTO tweets (ticker, datetime, text, inc) VALUES('{ticker}', '{datetime}', '{text}', '{inc_val}')")
