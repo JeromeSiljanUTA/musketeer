@@ -4,23 +4,36 @@
     <meta charset="UTF-8">
     <title>WoodStock</title>
     <style>
-        body {
-          font-family: 'Trebuchet MS', sans-serif;
+        body{
+            background-image: linear-gradient(to right, blue , yellow);
+        }
+        textarea{
+            resize: none;
+        }
+        .landing-page {
+            font-family: 'Trebuchet MS', sans-serif;
+            height: 100vh;
+            width: 100vw;
+        }
+        .tweet-predict-container{
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         #main_container {
-            width: 100vw;
-            height: 100vh;
-        }
-        #grad {
-            background-image: linear-gradient(to right, red , yellow);
+           
+            padding: 0%;
         }
         
     </style>
 </head>
 <body>
-    <div id="main_container"style="background-image: linear-gradient(to right, red , yellow);">
-        <h1>Hello World!</h1>
-        <h2>Welcome to FlaskApp!</h2>
+    <div class="landing-page">
+        <h1>WoodStock</h1>
+        <h2>Welcome to Our App!</h2>
+        <div id="tweet-predict-container">
+            <textarea id="textBoxArea" name="textBox" rows="10" cols="50" placeholder="Enter Tweet You Think Will Affect Company Stock"></textarea>
+        </div>
     </div>
     
 </body>
