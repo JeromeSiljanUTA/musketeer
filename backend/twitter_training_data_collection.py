@@ -1,35 +1,39 @@
 import tweepy
+import psycopg2
 import pandas as pd
 import time
+import re
 
 # List of companies & their CEO's twitter accounts
 companies = [
-    'Apple',
-    'Google',
-    'Dell',
-    'Epic Games',
-    'Microsoft',
-    'Uber',
-    'Spotify',
-    'Xbox',
-    'Amazon',
-    'Peloton',
-    'Lyft',
-    'Airbnb'
+    'TSLA'#,
+    #'Apple',
+    #'Google',
+    #'Dell',
+    #'Epic Games',
+    #'Microsoft',
+    #'Uber',
+    #'Spotify',
+    #'Xbox',
+    #'Amazon',
+    #'Peloton',
+    #'Lyft',
+    #'Airbnb'
     ]
 ceo_accounts = [
-    'tim_cook',
-    'sundarpichai',
-    'MichaelDell',
-    'TimSweeneyEpic',
-    'satyanadella',
-    'dkhos',
-    'eldsjal',
-    'XboxP3',
-    'JeffBezos',
-    'keylargofoley',
-    'logangreen',
-    'bchesky'
+    'elonmusk'#,
+    #'tim_cook',
+    #'sundarpichai',
+    #'MichaelDell',
+    #'TimSweeneyEpic',
+    #'satyanadella',
+    #'dkhos',
+    #'eldsjal',
+    #'XboxP3',
+    #'JeffBezos',
+    #'keylargofoley',
+    #'logangreen',
+    #'bchesky'
     ]
 
 # Set Twitter API Information
@@ -64,7 +68,24 @@ for x in range(len(companies)):
         print("Error: Waiting 2 minutes for cooldown")
         time.sleep(120)
 
-# Make DataFrame Object
-df = pd.DataFrame(messages)
-df.to_csv('saved_tweets')
-print(df)
+# Push to db
+db_url = 'postgresql://vladimir:auCN0jNaEMIhSArPYHdhEg@free-tier.gcp-us-central1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full&options=--cluster%3Dmusketeer-db-6480'
+conn = psycopg2.connect(db_url)
+
+df_iter = df.iterrows()
+regex = re.compile('[^a-zA-Z]')
+
+with conn.cursor() as cur:
+    cur.execute('SET DATABASE = defaultdb')
+
+    for row in df_iter:
+        ticker = row[1][0]
+        datetime = row[1][2]
+        text = ''
+        regex.sub(text, row[1][3].strip())
+        cur.execute(f"INSERT INTO tweets (ticker, datetime, text) VALUES('{ticker}', '{datetime}', '{text}')")
+
+    cur.execute('SELECT * FROM tweets')
+    print(cur.fetchall())
+    conn.commit()
+    conn.close()
