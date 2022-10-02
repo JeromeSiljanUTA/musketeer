@@ -64,9 +64,7 @@ for x in range(len(companies)):
         print("Error: Waiting 2 minutes for cooldown")
         time.sleep(120)
 
-# Print size of messages
-print(len(messages))
-
 # Make DataFrame Object
 df = pd.DataFrame(messages)
+df.to_csv('saved_tweets')
 print(df)
