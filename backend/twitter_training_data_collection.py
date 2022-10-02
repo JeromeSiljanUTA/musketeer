@@ -72,17 +72,16 @@ for x in range(len(companies)):
 db_url = 'postgresql://vladimir:auCN0jNaEMIhSArPYHdhEg@free-tier.gcp-us-central1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full&options=--cluster%3Dmusketeer-db-6480'
 conn = psycopg2.connect(db_url)
 
-df_iter = df.iterrows()
 regex = re.compile('[^a-zA-Z]')
 
 with conn.cursor() as cur:
     cur.execute('SET DATABASE = defaultdb')
 
-    for row in df_iter:
-        ticker = row[1][0]
-        datetime = row[1][2]
+    for message in messages:
+        ticker = message['company']
+        datetime = message['time']
         text = ''
-        regex.sub(text, row[1][3].strip())
+        regex.sub(text, message['text'].strip())
         cur.execute(f"INSERT INTO tweets (ticker, datetime, text) VALUES('{ticker}', '{datetime}', '{text}')")
 
     cur.execute('SELECT * FROM tweets')
