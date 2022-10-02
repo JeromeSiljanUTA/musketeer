@@ -2,10 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <!-- Mobile Friendly -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"> 
     <title>TweetTheDip</title>
     <style>
         body{
-            background-image: linear-gradient(to right, blue , yellow);
+            background-color:aqua; 
         }
         textarea{
             resize: none;
@@ -24,7 +26,18 @@
         #textBoxButton{
             margin-left: 20px;
         }
-        
+        #fluctuation-indicator{
+            display: flex;
+            justify-content: center;
+            align-content: center;
+        }
+        .fluctation-container{
+            font-size: 36px;
+            margin: 20px;
+            background-color: gray;
+            width: 200px;
+            height: 200px;
+        }
     </style>
 </head>
 <body>
@@ -32,11 +45,16 @@
         <h1>WoodStock</h1>
         <h2>Welcome to Our App!</h2>
         <div id="tweet-predict-container">
-            <textarea id="textBoxArea" name="textBox" rows="10" cols="50" placeholder="Enter Tweet You Think Will Affect Company Stock"></textarea>
-            <button id="textBoxButton">Hello</button>
+            <div style="border-width:1px;
+            border-style:solid;
+            border-color:black;">
+                <textarea style="margin: 0px;" id="textBoxArea" name="textBox" rows="10" cols="50" placeholder="Enter Tweet You Think Will Affect Company Stock"></textarea>
+            </div>
+            <button id="textBoxButton">Go</button>
         </div>
         <div id="fluctuation-indicator">
-
+            <div class="fluctation-container" id="increasing-stock-marker"><p>INCREASING</p></div>
+            <div class="fluctation-container" id="decreasing-stock-marker"><p>DECREASING</p></div>
         </div>
     </div>
     
