@@ -4,6 +4,28 @@ import pandas as pd
 import time
 import re
 
+db_url = 'postgresql://vladimir:auCN0jNaEMIhSArPYHdhEg@free-tier.gcp-us-central1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full&options=--cluster%3Dmusketeer-db-6480'
+
+def did_inc(date):
+    conn = psycopg2.connect(db_url)
+    with conn.cursor() as cur:
+        cur.execute('SET DATABASE = defaultdb')
+        try:
+            cur.execute(f"SELECT * FROM stocks where datetime < '{date}' ORDER BY datetime DESC LIMIT 1")
+            before = (cur.fetchall()[0][3])
+        except:
+            return 1
+        try:
+            cur.execute(f"SELECT * FROM stocks where datetime > '{date}' ORDER BY datetime ASC LIMIT 1")
+            after = (cur.fetchall()[0][3])
+        except:
+            return 1
+        if (before - after) >= 0:
+            return 0
+        else:
+            return 1
+        conn.close()
+
 # List of companies & their CEO's twitter accounts
 companies = [
     'TSLA'#,
@@ -69,7 +91,6 @@ for x in range(len(companies)):
         time.sleep(120)
 
 # Push to db
-db_url = 'postgresql://vladimir:auCN0jNaEMIhSArPYHdhEg@free-tier.gcp-us-central1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full&options=--cluster%3Dmusketeer-db-6480'
 conn = psycopg2.connect(db_url)
 
 regex = re.compile('[^a-zA-Z]')
@@ -82,7 +103,8 @@ with conn.cursor() as cur:
         datetime = message['time']
         text = ''
         regex.sub(text, message['text'].strip())
-        cur.execute(f"INSERT INTO tweets (ticker, datetime, text) VALUES('{ticker}', '{datetime}', '{text}')")
+        inc_val = did_inc(datetime)
+        cur.execute(f"INSERT INTO tweets (ticker, datetime, text, inc) VALUES('{ticker}', '{datetime}', '{text}', '{inc_val}')")
 
     cur.execute('SELECT * FROM tweets')
     print(cur.fetchall())
