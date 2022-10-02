@@ -103,6 +103,7 @@ with conn.cursor() as cur:
         datetime = message['time']
         text = ''
         regex.sub(text, message['text'].strip())
+        print(text)
         inc_val = did_inc(datetime)
         cur.execute(f"INSERT INTO tweets (ticker, datetime, text, inc) VALUES('{ticker}', '{datetime}', '{text}', '{inc_val}')")
 
